@@ -1,15 +1,16 @@
-# CHANGE-TO-YOURNAME-aws-node-http-api-project
-service: pglim360-aws-node-http-api-project
+service: wengsiong-serverless-nodejs-api
 frameworkVersion: '3'
 
-provider:
+provider: 
   name: aws
   runtime: nodejs18.x
   region: ap-southeast-1
+  deploymentBucket:
+    name: cohort2.serverless.deploys
 
 functions:
-  api:
-    handler: index.handler
+  greeting:
+    handler: index.lambdaHandler
     events:
       - httpApi:
           path: /
