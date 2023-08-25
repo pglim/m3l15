@@ -56,7 +56,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-          run: snyk auth ea5f0a61-178f-4aa9-870a-8878650f8a25
+          # run: snyk auth ea5f0a61-178f-4aa9-870a-8878650f8a25
 
   deploy:
     runs-on: ubuntu-latest
