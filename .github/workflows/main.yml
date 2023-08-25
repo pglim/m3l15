@@ -51,12 +51,12 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Run Snyk to check for vulnerabilities
-        run: snyk auth ea5f0a61-178f-4aa9-870a-8878650f8a25
         uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+          run: snyk auth ea5f0a61-178f-4aa9-870a-8878650f8a25
 
   deploy:
     runs-on: ubuntu-latest
