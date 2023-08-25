@@ -1,35 +1,35 @@
-name: CICD for Serverless Application
-run-name: ${{ github.actor }} is doing CICD for Serverless Application
+name: CI/CD for Serverless Nodejs Application with Security, Vulnerability Scan & CloudWatch
+run-name: ${{ github.actor }} is running CI/CD for Serverless Nodejs Application
 
 on:
   push:
-    branches: [ main, "*" ]
+    branches: [ dev, "*" ]
 
 jobs:
-  pre-deploy: #job name(can be any name,which will appear on the github action page/pipeline)
+  pre-deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "The job is automatically triggerd by a ${{ github.event_name }} event."
+      - run: echo "The job is automatically triggered by a ${{ github.event_name }} event."
 
   install-dependencies:
     runs-on: ubuntu-latest
     needs: pre-deploy
     steps:
-      - name: Checkout repository code
+      - name: Checkout repo code
         uses: actions/checkout@v3
-      - name: Run installation of dependencies command
+      - name: Install dependencies
         run: npm install
-
+  
   unit-testing:
     runs-on: ubuntu-latest
     needs: install-dependencies
     steps:
-      - name: Checkout repository code
+      - name: Checkout repo code
         uses: actions/checkout@v3
-      - name: Run installation of dependencies command
+      - name: Install dependencies
         run: npm install
-      - name: Run unit testing command
-        run: npm run test
+      - name: Run unit testing
+        run: npm test
 
   vulnerability-scan-1:
     runs-on: ubuntu-latest
@@ -56,12 +56,12 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-          
+
   deploy:
     runs-on: ubuntu-latest
-    needs: unit-testing
+    needs: [ vulnerability-scan-1, vulnerability-scan-2 ]
     steps:
-      - name: Checkout repository code
+      - name: Checkout repo code
         uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -75,32 +75,17 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
       - name: Retrieve secret from AWS
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
           secret-ids: |
-            pglim360*
+            wengsiong*
         env:
           AWS_REGION: ap-southeast-1
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Show My Secrets
+      - name: Show the Secret value
         run: |
-          for var in $(env | grep '^PGLIM360_'); do
+          for var in $(env | grep '^WENGSIONG_'); do
             echo "Variable: $var"
           done
-
-  post-deploy-monitor:
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - name: Checkout repo code
-        uses: actions/checkout@v3
-      - name: Run Snyk to monitor vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-#
