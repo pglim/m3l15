@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/pglim/m3l12del#readme",
   "dependencies": {
-    "serverless": "^3.34.0"
+    "serverless": "^3.34.0",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "jest": "^29.6.2",
